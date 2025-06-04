@@ -14,21 +14,21 @@ import java.util.Arrays;
 public final class Main {
 
     public void init() throws IOException, InterruptedException {
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.omdbapi.com/?t=matrix&apikey=6585022c"))
+        var client = HttpClient.newHttpClient(); // novo cliente
+        var request = HttpRequest.newBuilder() // nova requisição
+                .uri(URI.create("https://www.omdbapi.com/?t=matrix&apikey=6585022c")) // URL
                 .build();
 
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString()); // adquire a resposta
 
-        System.out.println(response.body());
+        System.out.println(response.body()); // adquire o corpo da resposta
 
         var gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                .create();
+                .create(); // cria a porra de um GSON
 
-        var myTitle = gson.fromJson(response.body(), TitleEz.class);
-        System.out.println(myTitle);
+        var myTitle = gson.fromJson(response.body(), TitleEz.class); // transforma o gson na classe q eu criei
+        System.out.println(myTitle); // printa a resposta
     }
 
     public static void main(String[] args) {
