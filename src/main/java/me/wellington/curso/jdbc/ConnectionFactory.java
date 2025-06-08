@@ -1,10 +1,9 @@
-package me.wellington.curso.database;
+package me.wellington.curso.jdbc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public final class ConnectionFactory {

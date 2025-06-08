@@ -1,10 +1,7 @@
-package me.wellington.curso.database;
+package me.wellington.curso.jdbc;
 
-import me.wellington.curso.database.objects.Profile;
-import me.wellington.curso.database.repositories.ProfileRepository;
-import me.wellington.curso.database.services.ProfileService;
-
-import java.sql.SQLException;
+import me.wellington.curso.jdbc.objects.Profile;
+import me.wellington.curso.jdbc.services.ProfileService;
 
 public final class Main {
     private final ProfileService profileService = new ProfileService();

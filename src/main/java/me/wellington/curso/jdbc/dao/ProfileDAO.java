@@ -1,22 +1,16 @@
-package me.wellington.curso.database.dao;
+package me.wellington.curso.jdbc.dao;
 
-import me.wellington.curso.database.objects.Profile;
-import me.wellington.curso.database.services.ProfileService;
-
-import java.math.BigDecimal;
+import me.wellington.curso.jdbc.objects.Profile;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 
 public final class ProfileDAO {
-    private Connection connection;
-    private ProfileService service;
+    private final Connection connection;
 
-    public ProfileDAO(Connection connection, ProfileService service) {
+    public ProfileDAO(Connection connection) {
         this.connection = connection;
-        this.service = service;
     }
 
     public Set<Profile> getProfiles() {
