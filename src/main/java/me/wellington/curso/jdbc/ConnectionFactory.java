@@ -7,8 +7,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public final class ConnectionFactory {
+    private static final HikariDataSource hikariDataSource;
 
-    private HikariDataSource createDataSource() {
+    static {
         var config = new HikariConfig();
         config.setJdbcUrl("jdbc:h2:file:./db/jdbc/curso");
         config.setUsername("sa");
@@ -16,15 +17,15 @@ public final class ConnectionFactory {
         config.setDriverClassName("org.h2.Driver");
 
         config.setMaximumPoolSize(10);
-        return new HikariDataSource(config);
+
+        hikariDataSource = new HikariDataSource(config);
     }
 
     public Connection getConnection() {
         try {
-            return createDataSource().getConnection();
+            return hikariDataSource.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

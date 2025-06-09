@@ -13,26 +13,33 @@ public final class ProfileService {
     private final ConnectionFactory connectionFactory = new ConnectionFactory();
 
     public ProfileService() {
-        new ProfileDAO(connectionFactory.getConnection()).init();
+        new ProfileDAO(connectionFactory).init();
     }
 
     public void delete(int number) {
-        new ProfileDAO(connectionFactory.getConnection()).delete(number);
+        new ProfileDAO(connectionFactory).delete(number);
     }
 
     public void register(Profile profile) {
-        repository.add(new ProfileDAO(connectionFactory.getConnection()).create(profile));
+        repository.add(new ProfileDAO(connectionFactory).create(profile));
+    }
+
+    public void clear() {
+        new ProfileDAO(connectionFactory).clear();
+        repository.clear();
     }
 
     public void change(int number, Field object, Object value) {
-        new ProfileDAO(connectionFactory.getConnection()).change(number, object, value);
+        new ProfileDAO(connectionFactory).change(number, object, value);
     }
 
-    public void setupProfiles() {
-        var result = new ProfileDAO(connectionFactory.getConnection()).getProfiles();
+    public ProfileService setupProfiles() {
+        var result = new ProfileDAO(connectionFactory).getProfiles();
 
         repository.addAll(result);
         repository.sort(Comparator.comparing(Profile::getNumber));
+
+        return this;
     }
 
     public ProfileRepository getRepository() {

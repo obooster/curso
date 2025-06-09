@@ -10,7 +10,7 @@ import java.util.logging.Level;
 
 public final class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private final ProfileService profileService = new ProfileService();
+    private final ProfileService profileService = new ProfileService().setupProfiles();
 
     static {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "warn");
@@ -18,11 +18,14 @@ public final class Main {
     }
 
     public void init() {
-        profileService.setupProfiles();
 
         var scanner = new Scanner(System.in);
         System.out.print("Bom dia! Escreva seu nome a seguir: ");
-        var name = scanner.nextLine();
+        var name = scanner.nextLine().trim();
+        if (name.equals("clearh2")) {
+            profileService.clear();
+            return;
+        }
         System.out.print("Certo! Agora a sua idade: ");
         var age = scanner.nextInt();
 
@@ -33,7 +36,7 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-        new Main().init();
+        for (var main = new Main();;) main.init();
     }
 
 }
