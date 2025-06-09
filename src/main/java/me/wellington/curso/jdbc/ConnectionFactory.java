@@ -7,13 +7,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public final class ConnectionFactory {
-    private static final String SQL_URL = "";
 
     private HikariDataSource createDataSource() {
         var config = new HikariConfig();
-        config.setJdbcUrl(SQL_URL);
-        config.setMaximumPoolSize(10);
+        config.setJdbcUrl("jdbc:h2:file:./db/jdbc/curso");
+        config.setUsername("sa");
+        config.setPassword("");
+        config.setDriverClassName("org.h2.Driver");
 
+        config.setMaximumPoolSize(10);
         return new HikariDataSource(config);
     }
 

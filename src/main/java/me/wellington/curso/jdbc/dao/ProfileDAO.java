@@ -1,8 +1,11 @@
 package me.wellington.curso.jdbc.dao;
 
+import me.wellington.curso.jdbc.enums.Field;
 import me.wellington.curso.jdbc.objects.Profile;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +14,22 @@ public final class ProfileDAO {
 
     public ProfileDAO(Connection connection) {
         this.connection = connection;
+    }
+
+    public void init() {
+        try {
+            var statement = connection.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS conta (
+                        numero INT PRIMARY KEY AUTO_INCREMENT,
+                        name VARCHAR(255),
+                        idade INT
+                    )
+                    """);
+
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Set<Profile> getProfiles() {
@@ -29,7 +48,6 @@ public final class ProfileDAO {
 
             statement.close();
             connection.commit();
-            connection.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -37,25 +55,28 @@ public final class ProfileDAO {
         return profiles;
     }
 
-    public void create(Profile profile) {
+    public Profile create(Profile profile) {
         var statement = (PreparedStatement) null;
 
         try {
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement("INSERT INTO conta (numero, nome, idade) VALUES (?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO conta (name, idade) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
 
-            statement.setInt(1, profile.number());
-            statement.setString(2, profile.name());
-            statement.setInt(3, profile.age());
+            statement.setString(1, profile.getName());
+            statement.setInt(2, profile.getAge());
 
             statement.execute();
+            var resultSet = statement.getGeneratedKeys();
+
+            if (resultSet.next()) profile.setNumber(resultSet.getInt(1));
             statement.close();
 
             connection.commit();
-            connection.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        return profile;
     }
 
     public void delete(int number) {
@@ -71,20 +92,18 @@ public final class ProfileDAO {
             statement.close();
 
             connection.commit();
-            connection.close();
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public void change(int number, String info, Object value) {
+    public void change(int number, Field info, Object value) {
         var statement = (PreparedStatement) null;
 
         try {
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement("UPDATE conta SET " + info + " = ? WHERE numero = ?");
+            statement = connection.prepareStatement("UPDATE conta SET " + info.object + " = ? WHERE numero = ?");
 
             statement.setObject(1, value);
             statement.setInt(2, number);
@@ -93,7 +112,6 @@ public final class ProfileDAO {
             statement.close();
 
             connection.commit();
-            connection.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
