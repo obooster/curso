@@ -1,19 +1,22 @@
 package me.wellington.curso.jpa.entities;
 
-import me.wellington.curso.jpa.enums.Gender;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "community")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public final class Person {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private int age;
 
-    @ManyToOne
+    /*@ManyToOne*/ @Embedded
     private Gender gender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mother_id")
+    private Mother mother;
 
     public Person() {}
 
@@ -21,6 +24,18 @@ public final class Person {
         this.name = name;
         this.age = age;
         this.gender = gender;
+    }
+
+    public Mother getMother() {
+        return mother;
+    }
+
+    public void setMother(Mother mother) {
+        this.mother = mother;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Gender getGender() {
@@ -58,6 +73,8 @@ public final class Person {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
+                ", mother=" + mother.getName() +
                 '}';
     }
+
 }

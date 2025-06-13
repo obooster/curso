@@ -1,7 +1,7 @@
 package me.wellington.curso.jpa.dao;
 
 import me.wellington.curso.jpa.entities.Person;
-import me.wellington.curso.jpa.enums.Gender;
+import me.wellington.curso.jpa.entities.Gender;
 
 import javax.persistence.EntityManager;
 import java.util.Arrays;
@@ -30,10 +30,19 @@ public final class PersonDAO {
         return entityManager.createQuery("SELECT p FROM Person p", Person.class).getResultList();
     }
 
-    public List<Person> findByName(String name) {
-        return entityManager.createQuery("SELECT p FROM Person p WHERE p.name = ?1", Person.class)
-                .setParameter(1, name)
-                .getResultList();
+    public Person findByName(String name) {
+        var builder = entityManager.getCriteriaBuilder();
+        var query = builder.createQuery(Person.class);
+        var from = query.from(Person.class);
+
+        var filter = builder.and(builder.equal(from.get("name"), name));
+
+        query.where(filter);
+
+        return entityManager.createQuery(query).getSingleResult();
+       // return entityManager.createQuery("SELECT p FROM Person p WHERE p.name = ?1", Person.class)
+        //        .setParameter(1, name)
+        //        .getResultList();
     }
 
     public Gender findGenderByName(String name) {
